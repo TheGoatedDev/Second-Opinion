@@ -1,17 +1,26 @@
 {
-  "name": "cc-second-opinion",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "start": "bun run src/index.ts",
-    "build": "bun build src/index.ts --compile --outfile dist/second-opinion"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "zod": "^3.25.0"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "typescript": "^5.0.0"
-  }
+	"name": "cc-second-opinion",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"start": "bun run src/index.ts",
+		"build": "bun build src/index.ts --compile --outfile dist/second-opinion",
+		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*.{ts,tsx,js,jsx,json}": [
+			"biome check --write --no-errors-on-unmatched"
+		]
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.29.0",
+		"zod": "^3.25.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.11",
+		"@types/bun": "latest",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.4.0",
+		"typescript": "^5.0.0"
+	}
 }
