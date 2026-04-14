@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { runClaude } from "./claude.ts";
 import { runCodex } from "./codex.ts";
 import { runOpencode } from "./opencode.ts";
 import type { AgentOptions, AgentResult } from "./types.ts";
@@ -28,7 +29,7 @@ server.registerTool(
 	"get_second_opinion",
 	{
 		description:
-			"Get a second opinion from another AI coding agent (Codex or Opencode). " +
+			"Get a second opinion from another AI coding agent (Codex, Opencode, or Claude). " +
 			"Sends a prompt to the chosen agent, writes the response to a file, and returns the file path. " +
 			"The caller can then read the file to see the agent's response.",
 		inputSchema: {
@@ -38,10 +39,10 @@ server.registerTool(
 					"The question, code snippet, or task to send to the other AI agent",
 				),
 			agent: z
-				.enum(["codex", "opencode"])
+				.enum(["codex", "opencode", "claude"])
 				.default("codex")
 				.describe(
-					"Which AI agent to consult. 'codex' uses OpenAI Codex CLI, 'opencode' uses the Opencode CLI",
+					"Which AI agent to consult. 'codex' uses OpenAI Codex CLI, 'opencode' uses the Opencode CLI, 'claude' uses Claude Code CLI",
 				),
 			working_directory: z
 				.string()
@@ -112,7 +113,9 @@ server.registerTool(
 			result =
 				agent === "codex"
 					? await runCodex(options)
-					: await runOpencode(options);
+					: agent === "claude"
+						? await runClaude(options)
+						: await runOpencode(options);
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : String(err);
 			return {

@@ -5,7 +5,7 @@ export interface AgentOptions {
 }
 
 export interface AgentResult {
-	agent: "codex" | "opencode";
+	agent: "codex" | "opencode" | "claude";
 	response: string;
 	durationMs: number;
 	timedOut: boolean;
